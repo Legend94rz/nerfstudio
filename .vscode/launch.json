@@ -5,6 +5,55 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "train nusc",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/nerfstudio/scripts/train.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "args": [
+        //"depth-nerfacto",
+        "nerfacto",
+        "--data",
+        "ns_data/",
+        "--viewer.quit-on-train-completion",
+        "True",
+        //"--pipeline.model.depth-loss-type",
+        //"URF",
+        //"--pipeline.model.depth-loss-mult",
+        //"1e-5",
+        "--pipeline.datamanager.train-num-images-to-sample-from",
+        "200",
+        "--pipeline.datamanager.train-num-times-to-repeat-images",
+        "4",
+        "nerfstudio-data",
+        "--downscale-factor",
+        "1",
+      ],
+      "cwd": "/home/renzhen/userdata/data/nerf/nusc_nerf"
+    },
+    {
+      "name": "process data",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/nerfstudio/scripts/process_data.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "args": [
+        "images",
+        "--data",
+        "images/",
+        "--output-dir",
+        "ns_data",
+        "--skip-colmap",
+        "--colmap-model-path",
+        "../sparse",
+        "--use-sfm-depth",
+        "--include-depth-debug"
+      ],
+      "cwd": "/home/renzhen/userdata/data/nerf/nusc_nerf"
+    },
+    {
       "name": "Launch Chrome against localhost",
       "request": "launch",
       "type": "chrome",
@@ -44,7 +93,9 @@
       "request": "launch",
       "program": "nerfstudio/scripts/train.py",
       "console": "integratedTerminal",
-      "args": ["instant_ngp"]
+      "args": [
+        "instant_ngp"
+      ]
     },
     {
       "name": "Python: train ngp nerfstudio",
@@ -91,7 +142,9 @@
       "request": "launch",
       "program": "nerfstudio/scripts/train.py",
       "console": "integratedTerminal",
-      "args": ["semantic_nerf"]
+      "args": [
+        "semantic_nerf"
+      ]
     },
     {
       "name": "Python: NeuS on Replica",
@@ -100,7 +153,9 @@
       "program": "nerfstudio/scripts/train.py",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "env": { "CUDA_VISIBLE_DEVICES": "0" },
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "0"
+      },
       "args": [
         "neus",
         "--pipeline.model.sdf-field.inside-outside=True",
@@ -119,7 +174,9 @@
       "program": "nerfstudio/scripts/train.py",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "env": { "CUDA_VISIBLE_DEVICES": "0" },
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "0"
+      },
       "args": [
         "neus-facto",
         "--pipeline.model.sdf-field.inside-outside=True",
@@ -138,7 +195,9 @@
       "program": "nerfstudio/scripts/train.py",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "env": { "CUDA_VISIBLE_DEVICES": "0" },
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "0"
+      },
       "args": [
         "neus-facto",
         "--pipeline.model.sdf-field.inside-outside=False",

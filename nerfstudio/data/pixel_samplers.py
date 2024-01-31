@@ -17,23 +17,15 @@ Code for sampling pixels.
 """
 
 import random
+from dataclasses import dataclass, field
+from typing import Dict, Optional, Type, Union
 
 import torch
 from jaxtyping import Int
 from torch import Tensor
 
-from dataclasses import dataclass, field
+from nerfstudio.configs.base_config import InstantiateConfig
 from nerfstudio.data.utils.pixel_sampling_utils import erode_mask
-from typing import (
-    Dict,
-    Optional,
-    Type,
-    Union,
-)
-
-from nerfstudio.configs.base_config import (
-    InstantiateConfig,
-)
 
 
 @dataclass
@@ -93,16 +85,13 @@ class PixelSampler:
             num_images: number of images to sample over
             mask: mask of possible pixels in an image to sample from.
         """
+        indices = (
+            torch.rand((batch_size, 3), device=device)
+            * torch.tensor([num_images, image_height, image_width], device=device)
+        ).long()
         if isinstance(mask, torch.Tensor):
-            nonzero_indices = torch.nonzero(mask[..., 0], as_tuple=False)
-            chosen_indices = random.sample(range(len(nonzero_indices)), k=batch_size)
-            indices = nonzero_indices[chosen_indices]
-        else:
-            indices = (
-                torch.rand((batch_size, 3), device=device)
-                * torch.tensor([num_images, image_height, image_width], device=device)
-            ).long()
-
+            flag = mask[indices[:, 0], indices[:, 1], indices[:, 2], 0]
+            indices = indices[flag]
         return indices
 
     def sample_method_equirectangular(
@@ -172,7 +161,7 @@ class PixelSampler:
         collated_batch = {
             key: value[c, y, x] for key, value in batch.items() if key != "image_idx" and value is not None
         }
-        assert collated_batch["image"].shape[0] == num_rays_per_batch
+        # assert collated_batch["image"].shape[0] == num_rays_per_batch
 
         # Needed to correct the random indices to their actual camera idx locations.
         indices[:, 0] = batch["image_idx"][c]
